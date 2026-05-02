@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sportscli"
+version = "0.1.0"
+description = "Terminal sports data CLI"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "typer",
+    "requests",
+    "rich"
+]
+
+[project.scripts]
+sports = "sportscli.cli:app"
