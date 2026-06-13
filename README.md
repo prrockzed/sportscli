@@ -1,6 +1,12 @@
 # sportscli
 
-Real-time sports data in your terminal. Chess, Cricket, and Football — all from a single `sports` command.
+Real-time sports data in your terminal — no browser, no app, no noise.
+
+`sportscli` is a lightweight CLI tool that pulls live scores, standings, schedules, and player data directly into your terminal. Whether you want to check the Premier League table mid-debug, glance at a live cricket scorecard without leaving your workflow, or look up a chess player's rating while a build runs — `sportscli` keeps you in the terminal and out of the browser.
+
+Built on free public APIs with no mandatory setup. Chess works out of the box. Cricket and Football need a one-time free API key that the tool will prompt you for automatically on first use.
+
+Currently supports **Chess** (Lichess), **Cricket** (cricketdata.org), and **Football** (football-data.org), with the architecture designed so adding a new sport is a single self-contained module — no changes to existing code.
 
 ## Requirements
 
