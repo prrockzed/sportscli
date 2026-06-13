@@ -20,8 +20,16 @@ Homepage = "https://github.com/prrockzed/sportscli"
 Repository = "https://github.com/prrockzed/sportscli"
 Issues = "https://github.com/prrockzed/sportscli/issues"
 
+[project.optional-dependencies]
+dev = [
+    "pytest>=7",
+]
+
 [tool.setuptools.packages.find]
 include = ["sportscli*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [project.scripts]
 sports = "sportscli.cli:app"
