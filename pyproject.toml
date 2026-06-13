@@ -4,15 +4,24 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sportscli"
-version = "0.1.0"
-description = "Terminal sports data CLI"
+version = "0.2.0"
+description = "Real-time sports data in your terminal"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "typer",
     "requests",
-    "rich"
+    "rich",
+    "platformdirs",
 ]
+
+[project.urls]
+Homepage = "https://github.com/prrockzed/sportscli"
+Repository = "https://github.com/prrockzed/sportscli"
+Issues = "https://github.com/prrockzed/sportscli/issues"
+
+[tool.setuptools.packages.find]
+include = ["sportscli*"]
 
 [project.scripts]
 sports = "sportscli.cli:app"
