@@ -14,6 +14,8 @@ from sportscli.sports.cricket.app import _show_menu as _cricket_menu
 from sportscli.sports.cricket.app import app as cricket_app
 from sportscli.sports.football.app import _show_menu as _football_menu
 from sportscli.sports.football.app import app as football_app
+from sportscli.sports.f1.app import _show_menu as _f1_menu
+from sportscli.sports.f1.app import app as f1_app
 
 app = typer.Typer(
     name="sports",
@@ -25,6 +27,7 @@ app = typer.Typer(
 app.add_typer(chess_app,    name="chess",    help="Chess data from Lichess (no key needed).")
 app.add_typer(cricket_app,  name="cricket",  help="Cricket live scores and schedules.")
 app.add_typer(football_app, name="football", help="Football scores, standings, and fixtures.")
+app.add_typer(f1_app,       name="f1",       help="Formula 1 schedule, standings, and live data (no key needed).")
 
 # ---------------------------------------------------------------------------
 # Config sub-app
@@ -113,6 +116,11 @@ def _show_welcome() -> None:
             border_style="yellow",
             expand=True,
         ),
+        Panel(
+            "[bold]f1[/bold]\n[dim]schedule · standings · constructors · results · live[/dim]",
+            border_style="red",
+            expand=True,
+        ),
     ]
 
     console.print()
@@ -144,6 +152,7 @@ def _show_root_menu() -> None:
         ("chess",    "Tournaments, live games, broadcasts, player profiles"),
         ("cricket",  "Live scores, scorecards, schedule"),
         ("football", "Live scores, standings, fixtures"),
+        ("f1",       "Schedule, standings, constructors, results, live session"),
     ])
     if choice == 1:
         _chess_menu()
@@ -151,6 +160,8 @@ def _show_root_menu() -> None:
         _cricket_menu()
     elif choice == 3:
         _football_menu()
+    elif choice == 4:
+        _f1_menu()
 
 
 @app.callback(invoke_without_command=True)

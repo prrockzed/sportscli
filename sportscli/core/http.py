@@ -26,7 +26,7 @@ class BaseAPIClient(ABC):
     def BASE_URL(self) -> str:  # type: ignore[override]
         ...
 
-    def get(self, endpoint: str, params: dict | None = None) -> dict:
+    def get(self, endpoint: str, params: dict | None = None) -> dict | list:
         url = f"{self.BASE_URL}{endpoint}"
         last_error: Exception | None = None
 
