@@ -1,11 +1,17 @@
-import typer
+import sys
 
-from sportscli.core.display import print_error, status_spinner
+import typer
+from rich.prompt import Prompt
+
+from sportscli.core.display import print_error, select_from_menu, status_spinner
 from sportscli.core.exceptions import ApiError, NetworkError
 from sportscli.sports.chess import display
 from sportscli.sports.chess.client import LichessClient
 
-app = typer.Typer(help="Chess data from Lichess (no API key required).")
+app = typer.Typer(
+    help="Chess data from Lichess (no API key required).",
+    no_args_is_help=False,
+)
 
 
 @app.command()
@@ -68,3 +74,27 @@ def player(username: str = typer.Argument(..., help="Lichess username")):
     except ApiError as e:
         print_error(f"API error: {e}")
         raise typer.Exit(1)
+
+
+def _show_menu() -> None:
+    choice = select_from_menu("Chess — Select a command", [
+        ("tournaments", "Current and upcoming tournaments"),
+        ("live",        "Live games on Lichess TV"),
+        ("broadcasts",  "Major chess broadcasts"),
+        ("player",      "Player profile and recent games"),
+    ])
+    if choice == 1:
+        tournaments()
+    elif choice == 2:
+        live()
+    elif choice == 3:
+        broadcasts()
+    elif choice == 4:
+        username = Prompt.ask("Lichess username")
+        player(username)
+
+
+@app.callback(invoke_without_command=True)
+def _main(ctx: typer.Context) -> None:
+    if ctx.invoked_subcommand is None and sys.stdin.isatty():
+        _show_menu()

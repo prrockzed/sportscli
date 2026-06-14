@@ -1,12 +1,18 @@
+import sys
+
 import typer
+from rich.prompt import Prompt
 
 import sportscli.config as config
-from sportscli.core.display import print_error, status_spinner
+from sportscli.core.display import console, print_error, select_from_menu, status_spinner
 from sportscli.core.exceptions import ApiError, AuthError, NetworkError
 from sportscli.sports.cricket import display
 from sportscli.sports.cricket.client import CricketDataClient
 
-app = typer.Typer(help="Cricket live scores and schedules (cricketdata.org API key required).")
+app = typer.Typer(
+    help="Cricket live scores and schedules (cricketdata.org API key required).",
+    no_args_is_help=False,
+)
 
 _SPORT = "cricket"
 
@@ -76,3 +82,26 @@ def schedule():
     except ApiError as e:
         print_error(f"API error: {e}")
         raise typer.Exit(1)
+
+
+def _show_menu() -> None:
+    choice = select_from_menu("Cricket — Select a command", [
+        ("live",      "Currently live matches"),
+        ("scorecard", "Detailed scorecard for a match"),
+        ("schedule",  "Upcoming matches"),
+    ])
+    if choice == 1:
+        live()
+    elif choice == 2:
+        console.print("\n[dim]Fetching live matches so you can pick a match ID...[/dim]")
+        live()
+        match_id = Prompt.ask("\nEnter match ID from the list above")
+        scorecard(match_id)
+    elif choice == 3:
+        schedule()
+
+
+@app.callback(invoke_without_command=True)
+def _main(ctx: typer.Context) -> None:
+    if ctx.invoked_subcommand is None and sys.stdin.isatty():
+        _show_menu()

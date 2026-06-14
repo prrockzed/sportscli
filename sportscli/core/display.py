@@ -1,6 +1,7 @@
 from contextlib import contextmanager
 
 from rich.console import Console
+from rich.prompt import IntPrompt
 
 console = Console()
 
@@ -21,3 +22,17 @@ def print_success(msg: str) -> None:
 def status_spinner(msg: str):
     with console.status(f"[bold cyan]{msg}[/bold cyan]"):
         yield
+
+
+def select_from_menu(title: str, options: list[tuple[str, str]]) -> int:
+    """Display a numbered menu and return the 1-based selection."""
+    console.print()
+    console.print(f"[bold cyan]{title}[/bold cyan]")
+    for i, (name, desc) in enumerate(options, 1):
+        console.print(f"  [bold cyan][{i}][/bold cyan]  [bold]{name:<14}[/bold] [dim]{desc}[/dim]")
+    console.print()
+    return IntPrompt.ask(
+        "Choose",
+        choices=[str(i) for i in range(1, len(options) + 1)],
+        show_choices=False,
+    )

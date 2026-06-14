@@ -1,3 +1,5 @@
+import sys
+
 import typer
 from rich.columns import Columns
 from rich.panel import Panel
@@ -5,9 +7,12 @@ from rich.text import Text
 
 import sportscli.config as config
 from sportscli import __version__
-from sportscli.core.display import console, print_error, print_success, print_warning
+from sportscli.core.display import console, print_error, print_success, print_warning, select_from_menu
+from sportscli.sports.chess.app import _show_menu as _chess_menu
 from sportscli.sports.chess.app import app as chess_app
+from sportscli.sports.cricket.app import _show_menu as _cricket_menu
 from sportscli.sports.cricket.app import app as cricket_app
+from sportscli.sports.football.app import _show_menu as _football_menu
 from sportscli.sports.football.app import app as football_app
 
 app = typer.Typer(
@@ -86,7 +91,7 @@ def config_show():
 
 
 # ---------------------------------------------------------------------------
-# Welcome screen
+# Welcome screen (non-TTY / fallback)
 # ---------------------------------------------------------------------------
 
 def _show_welcome() -> None:
@@ -119,10 +124,42 @@ def _show_welcome() -> None:
     console.print()
 
 
+# ---------------------------------------------------------------------------
+# Interactive root menu (TTY)
+# ---------------------------------------------------------------------------
+
+def _show_header() -> None:
+    console.print()
+    console.print(Panel(
+        Text("⚽ 🏏 ♟  sportscli", style="bold white"),
+        border_style="bold white",
+        subtitle=f"v{__version__}",
+        padding=(0, 2),
+    ))
+
+
+def _show_root_menu() -> None:
+    _show_header()
+    choice = select_from_menu("Select a sport", [
+        ("chess",    "Tournaments, live games, broadcasts, player profiles"),
+        ("cricket",  "Live scores, scorecards, schedule"),
+        ("football", "Live scores, standings, fixtures"),
+    ])
+    if choice == 1:
+        _chess_menu()
+    elif choice == 2:
+        _cricket_menu()
+    elif choice == 3:
+        _football_menu()
+
+
 @app.callback(invoke_without_command=True)
 def main(ctx: typer.Context):
     if ctx.invoked_subcommand is None:
-        _show_welcome()
+        if sys.stdin.isatty():
+            _show_root_menu()
+        else:
+            _show_welcome()
 
 
 if __name__ == "__main__":
