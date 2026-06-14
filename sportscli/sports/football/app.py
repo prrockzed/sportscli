@@ -1,12 +1,18 @@
+import sys
+
 import typer
+from rich.prompt import Prompt
 
 import sportscli.config as config
-from sportscli.core.display import print_error, status_spinner
+from sportscli.core.display import print_error, select_from_menu, status_spinner
 from sportscli.core.exceptions import ApiError, AuthError, NetworkError
 from sportscli.sports.football import display
 from sportscli.sports.football.client import LEAGUE_IDS, FootballDataClient
 
-app = typer.Typer(help="Football scores, standings, and fixtures (football-data.org API key required).")
+app = typer.Typer(
+    help="Football scores, standings, and fixtures (football-data.org API key required).",
+    no_args_is_help=False,
+)
 
 _SPORT = "football"
 
@@ -14,6 +20,8 @@ _LEAGUE_HINT = (
     "League codes: pl (Premier League), bl1 (Bundesliga), sa (Serie A), "
     "pd (La Liga), fl1 (Ligue 1), ucl (Champions League)"
 )
+
+_LEAGUE_PROMPT = "League code (pl/bl1/sa/pd/fl1/ucl)"
 
 
 def _get_client() -> FootballDataClient:
@@ -86,3 +94,25 @@ def fixtures(
     except ApiError as e:
         print_error(f"API error: {e}")
         raise typer.Exit(1)
+
+
+def _show_menu() -> None:
+    choice = select_from_menu("Football — Select a command", [
+        ("live",      "All currently live matches"),
+        ("standings", "League table"),
+        ("fixtures",  "Upcoming fixtures"),
+    ])
+    if choice == 1:
+        live()
+    elif choice == 2:
+        league = Prompt.ask(_LEAGUE_PROMPT)
+        standings(league)
+    elif choice == 3:
+        league = Prompt.ask(_LEAGUE_PROMPT)
+        fixtures(league)
+
+
+@app.callback(invoke_without_command=True)
+def _main(ctx: typer.Context) -> None:
+    if ctx.invoked_subcommand is None and sys.stdin.isatty():
+        _show_menu()
