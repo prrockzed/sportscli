@@ -61,3 +61,30 @@ def set_api_key(sport: str, key: str) -> None:
     config.setdefault("version", "1")
     config.setdefault("api_keys", {})[sport] = key
     save(config)
+
+
+def get_favourites() -> dict:
+    return load().get("favourites", {})
+
+
+def add_favourite(category: str, value: str) -> None:
+    config = load()
+    config.setdefault("version", "1")
+    favs = config.setdefault("favourites", {})
+    items: list = favs.setdefault(category, [])
+    if value not in items:
+        items.append(value)
+    save(config)
+
+
+def remove_favourite(category: str, value: str) -> bool:
+    """Remove a favourite. Returns True if it was present, False otherwise."""
+    config = load()
+    favs = config.get("favourites", {})
+    items: list = favs.get(category, [])
+    if value not in items:
+        return False
+    items.remove(value)
+    config["favourites"][category] = items
+    save(config)
+    return True
