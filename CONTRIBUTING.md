@@ -81,13 +81,34 @@ Open an issue at [github.com/prrockzed/sportscli/issues](https://github.com/prro
 
 ## Submitting a Pull Request
 
-1. Fork the repo and create a branch from `main`:
+The `main` branch is protected — no direct pushes are allowed. Every change goes through a PR.
+
+1. **Open an issue first** describing what you want to fix or build:
+   [github.com/prrockzed/sportscli/issues/new](https://github.com/prrockzed/sportscli/issues/new)
+
+2. **Create a branch** referencing the issue number:
    ```bash
-   git checkout -b feat/your-feature-name
+   git checkout -b feat/issue-12-add-tennis
+   git checkout -b fix/issue-15-chess-crash
    ```
-2. Make your changes.
-3. Test manually — run the affected commands and verify the output looks correct.
-4. Open a pull request against `main` with a clear description of what changed and why.
+
+3. **Make your changes** and write or update tests for them.
+
+4. **Run the test suite locally** before pushing:
+   ```bash
+   pytest
+   ```
+   All 185 tests must pass. PRs with failing tests cannot be merged.
+
+5. **Push the branch and open a PR:**
+   ```bash
+   git push origin feat/issue-12-add-tennis
+   ```
+   In the PR description, write `Closes #12` to link it to the issue.
+
+6. **Tests run automatically** — the CI workflow tests against Python 3.10, 3.11, and 3.12. All three must be green.
+
+7. **Wait for review** — the maintainer (prrockzed) will review and approve before the PR can be merged.
 
 Keep pull requests focused. One feature or fix per PR makes review faster.
 
